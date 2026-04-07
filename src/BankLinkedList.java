@@ -1,0 +1,49 @@
+class BankLinkedList {
+    private Node head;
+
+    // Method to add a new account at the end of the list
+    public void addAccount(String name,double bal,int id) {
+        BankAccount newAcc = new BankAccount( name, bal, id);
+        Node newNode = new Node(newAcc);
+
+        if (head == null) {
+            head = newNode;
+        } else {
+            Node temp = head;
+            while (temp.next != null) {
+                temp = temp.next;
+            }
+            temp.next = newNode;
+        }
+        System.out.println("Account added successfully");
+    }
+
+    // Method to display all accounts
+    public void displayAccounts() {
+        if (head == null) {
+            System.out.println("List is empty.");
+            return;
+        }
+        System.out.println("Accounts List:");
+        Node temp = head;
+        int i = 1;
+        while (temp != null) {
+            System.out.println(i + ". " + temp.account.username + " – Balance: " + temp.account.balance);
+            temp = temp.next;
+            i++;
+        }
+    }
+
+    // Method to search by username
+    public void searchAccount(String name) {
+        Node temp = head;
+        while (temp != null) {
+            if (temp.account.username.equalsIgnoreCase(name)) {
+                System.out.println("Found: " + temp.account.username + " | ID: " + temp.account.accountNumber + " | Balance: " + temp.account.balance);
+                return;
+            }
+            temp = temp.next;
+        }
+        System.out.println("Account not found.");
+    }
+}
