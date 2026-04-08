@@ -1,4 +1,4 @@
-<img width="881" height="786" alt="изображение" src="https://github.com/user-attachments/assets/6c19fb41-0c53-4d71-ba3e-185891ac18d3" />ASSIGNMENT ADS 2
+ASSIGNMENT ADS 2
 
 
 <header>Student: Adilbek Shangerey</header><br>
