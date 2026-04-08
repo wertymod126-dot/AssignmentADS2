@@ -16,5 +16,19 @@ public class Main {
         list.searchAccount(searchName);
 
         sc.close();
+        TransactionManager tm = new TransactionManager();
+
+        // Adding transactions
+        tm.addTransaction("Deposit 50000 to Ali");
+        tm.addTransaction("Withdraw 20000 from Ali");
+
+        // Peek at the top of the stack
+        tm.showLastTransaction();
+
+        // Pop the last item (Undo)
+        tm.undoTransaction();
+
+        // Final check
+        tm.showLastTransaction();
     }
 }
