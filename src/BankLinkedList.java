@@ -1,7 +1,6 @@
 class BankLinkedList {
     private Node head;
 
-    // Method to add a new account at the end of the list
     public void addAccount(String name,double bal,int id) {
         BankAccount newAcc = new BankAccount( name, bal, id);
         Node newNode = new Node(newAcc);
@@ -46,4 +45,40 @@ class BankLinkedList {
         }
         System.out.println("Account not found.");
     }
+
+    // 1. Deposit Operation
+    public void deposit(String name, double amount) {
+        Node temp = head;
+        while (temp != null) {
+            if (temp.account.username.equalsIgnoreCase(name)) {
+                // Update the balance directly in the node
+                temp.account.balance += amount;
+                System.out.println("Deposit: " + amount);
+                System.out.println("New balance: " + temp.account.balance);
+                return; // Exit after updating
+            }
+            temp = temp.next;
+        }
+        System.out.println("Account not found.");
+    }
+
+    // 2. Withdraw Operation
+    public void withdraw(String name, double amount) {
+        Node temp = head;
+        while (temp != null) {
+            if (temp.account.username.equalsIgnoreCase(name)) {
+                if (temp.account.balance >= amount) {
+                    temp.account.balance -= amount;
+                    System.out.println("Withdraw: " + amount);
+                    System.out.println("New balance: " + temp.account.balance);
+                } else {
+                    System.out.println("Insufficient funds!");
+                }
+                return;
+            }
+            temp = temp.next;
+        }
+        System.out.println("Account not found.");
+    }
+
 }
