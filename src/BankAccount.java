@@ -1,14 +1,5 @@
 public class BankAccount {
-//    Create a class BankAccount containing:
-//            • accountNumber
-//• username
-//• balance
-//    Create a LinkedList to store accounts.
-//    Program must allow user to:
-//            • Add a new account
-//• Display all accounts
-//• Search account by username
-
+    // task 1
     String username;
     double balance;
     int accountNumber;

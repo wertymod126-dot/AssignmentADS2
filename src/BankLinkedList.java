@@ -1,4 +1,5 @@
 class BankLinkedList {
+    //task 1
     private Node head;
 
     public void addAccount(String name,double bal,int id) {
@@ -45,6 +46,8 @@ class BankLinkedList {
         }
         System.out.println("Account not found.");
     }
+
+    // Task 2 from here
 
     // 1. Deposit Operation
     public void deposit(String name, double amount) {
