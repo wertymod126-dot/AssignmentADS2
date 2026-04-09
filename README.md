@@ -40,7 +40,7 @@ ASSIGNMENT ADS 2
 <img width="883" height="553" alt="изображение" src="https://github.com/user-attachments/assets/866e7915-be1a-4b8d-976b-a8b503ae00ec" />
 
 <b>Brief Summary</b><br>
-<strong>bla bla bla</strong>
+<strong>In this assignment i implemented various classes to do their intended functions,for example BankAccount class or Transaction manager class and etc.I have implemented and used data structures like LinkedList,array and Queue.By far the hardest part of the assignment was to implement LinkedList because its my first time encountering this concept and it was hard for me to grasp it fully.In the end task 6 have been a grand finale to this assignment,connecting and integrating all the previous scattered classes into one making it a complete app.</strong>
 
 
 
