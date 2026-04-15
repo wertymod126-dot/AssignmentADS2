@@ -1,150 +1,71 @@
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Scanner;
-import java.util.Stack;
 
 public class BankingApp {
-
-    // --- System Data Structures ---
-    // 1. LinkedList for Active Accounts
-    static BankLinkedList activeAccounts = new BankLinkedList();
-
-    // 2. Stack for Transaction History (LIFO)
-    static Stack<String> transactionHistory = new Stack<>();
-
-    // 3. Queues for Admin Processing (FIFO)
-    static Queue<String> accountRequests = new LinkedList<>();
-    static Queue<String> billQueue = new LinkedList<>();
-
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
+        BankLinkedList masterList = new BankLinkedList();
+        AdminSimulation admin = new AdminSimulation(); //
+        TransactionManager history = new TransactionManager(); //
+        BillPaymentQueue bills = new BillPaymentQueue(); //
 
-        // Pre-fill some data so the system isn't empty
-        activeAccounts.addAccount("101", "Ali", 150000);
-        billQueue.add("Electricity Bill");
-        billQueue.add("Internet Bill");
+        // --- Task 6: Array of Predefined Accounts ---
+        BankAccount[] initialData = new BankAccount[3]; //
+        initialData[0] = new BankAccount("1001", "Alice", 500.0);
+        initialData[1] = new BankAccount("1002", "Bob", 1200.0);
+        initialData[2] = new BankAccount("1003", "Charlie", 750.0);
+
+        for (BankAccount acc : initialData) {
+            masterList.addAccount(acc.accountNumber, acc.username, acc.balance); //
+        }
 
         while (true) {
-            System.out.println("\n===== MAIN MENU =====");
-            System.out.println("1 - Enter Bank");
-            System.out.println("2 - Enter ATM");
-            System.out.println("3 - Admin Area");
-            System.out.println("4 - Exit");
-            System.out.print("Choose option: ");
+            System.out.println("\n1. Bank | 2. ATM | 3. Admin | 4. Exit");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
 
-            int choice = sc.nextInt();
-            sc.nextLine(); // Clear the scanner buffer
+            if (choice == 1) { // BANK MENU
+                System.out.println("1. Request Account | 2. Deposit | 3. Withdraw");
+                int sub = scanner.nextInt(); scanner.nextLine();
 
-            if (choice == 1) {
-                bankMenu(sc);
-            } else if (choice == 2) {
-                atmMenu(sc);
-            } else if (choice == 3) {
-                adminMenu(sc);
-            } else if (choice == 4) {
-                System.out.println("Exiting System. Goodbye!");
-                break; // Ends the program
-            } else {
-                System.out.println("Invalid choice.");
-            }
-        }
-        sc.close();
-    }
+                if (sub == 1) {
+                    System.out.print("Username: "); String u = scanner.nextLine();
+                    System.out.print("Initial $: "); double d = scanner.nextDouble();
+                    admin.submitAccountRequest("ID-" + u, d, u); //
+                } else {
+                    System.out.print("Username: "); String u = scanner.nextLine();
+                    BankAccount acc = masterList.findAccount(u);
+                    if (acc != null) {
+                        System.out.print("Amount: "); double amt = scanner.nextDouble();
+                        if (sub == 2) {
+                            acc.balance += amt; //
+                            history.addTransaction("Deposited " + amt + " to " + u); //
+                        } else if (acc.balance >= amt) {
+                            acc.balance -= amt; //
+                            history.addTransaction("Withdrew " + amt + " from " + u); //
+                        }
+                    } else { System.out.println("User not found."); }
+                }
 
-    // --- 1. BANK MENU ---
-    public static void bankMenu(Scanner sc) {
-        System.out.println("\n--- Bank Menu ---");
-        System.out.println("1. Submit Account Opening Request");
-        System.out.println("2. Deposit Money");
-        System.out.println("3. Withdraw Money");
-        System.out.print("Choose: ");
-        int choice = sc.nextInt();
-        sc.nextLine();
+            } else if (choice == 2) { // ATM MENU
+                System.out.print("Username: "); String u = scanner.nextLine();
+                BankAccount acc = masterList.findAccount(u);
+                if (acc != null) {
+                    System.out.println("1. Balance | 2. Withdraw");
+                    int sub = scanner.nextInt();
+                    if (sub == 1) System.out.println("Balance: " + acc.balance); //
+                    else {
+                        System.out.print("Amt: "); double amt = scanner.nextDouble();
+                        if (acc.balance >= amt) acc.balance -= amt; //
+                    }
+                }
 
-        if (choice == 1) {
-            System.out.print("Enter your name to apply: ");
-            String name = sc.nextLine();
-            accountRequests.add(name); // Adds to Queue
-            System.out.println("Request submitted. Please wait for Admin approval.");
-        }
-        else if (choice == 2) {
-            System.out.print("Enter username: ");
-            String name = sc.nextLine();
-            System.out.print("Deposit amount: ");
-            double amount = sc.nextDouble();
+            } else if (choice == 3) { // ADMIN MENU
+                System.out.println("1. Process Account Queue | 2. View Bills");
+                int sub = scanner.nextInt();
+                if (sub == 1) admin.processRequest("process"); //
+                else bills.displayBills(); //
 
-            // In a real scenario, you'd call activeAccounts.deposit() here.
-            // For now, we simulate the logic and record history.
-            transactionHistory.push("Deposited " + amount + " to " + name);
-            System.out.println("Deposit successful.");
-        }
-        else if (choice == 3) {
-            System.out.print("Enter username: ");
-            String name = sc.nextLine();
-            System.out.print("Withdraw amount: ");
-            double amount = sc.nextDouble();
-
-            transactionHistory.push("Withdrew " + amount + " from " + name);
-            System.out.println("Withdrawal successful.");
-        }
-    }
-
-    // --- 2. ATM MENU ---
-    public static void atmMenu(Scanner sc) {
-        System.out.println("\n--- ATM Menu ---");
-        System.out.println("1. Balance Enquiry");
-        System.out.println("2. Withdraw");
-        System.out.print("Choose: ");
-        int choice = sc.nextInt();
-        sc.nextLine();
-
-        if (choice == 1) {
-            System.out.print("Enter username: ");
-            String name = sc.nextLine();
-            activeAccounts.searchAccount(name); // Searches the LinkedList
-        } else if (choice == 2) {
-            System.out.print("Enter username: ");
-            String name = sc.nextLine();
-            System.out.print("Amount to withdraw: ");
-            double amount = sc.nextDouble();
-
-            transactionHistory.push("ATM Withdrawal of " + amount + " by " + name);
-            System.out.println("Please take your cash.");
-        }
-    }
-
-    // --- 3. ADMIN MENU ---
-    public static void adminMenu(Scanner sc) {
-        System.out.println("\n--- Admin Area ---");
-        System.out.println("1. View/Process Account Queue");
-        System.out.println("2. View/Process Bill Payment Queue");
-        System.out.println("3. View Recent Transactions (Stack)");
-        System.out.print("Choose: ");
-        int choice = sc.nextInt();
-        sc.nextLine();
-
-        if (choice == 1) {
-            System.out.println("Current Requests: " + accountRequests);
-            if (!accountRequests.isEmpty()) {
-                String newClient = accountRequests.poll(); // Removes from Queue
-                // Generates a random ID for the new account
-                activeAccounts.addAccount("999", newClient, 0.0);
-                System.out.println("Processed and approved: " + newClient);
-            } else {
-                System.out.println("No pending requests.");
-            }
-        }
-        else if (choice == 2) {
-            System.out.println("Pending Bills: " + billQueue);
-            if (!billQueue.isEmpty()) {
-                String paidBill = billQueue.poll();
-                System.out.println("Processed payment for: " + paidBill);
-                transactionHistory.push("Paid bill: " + paidBill);
-            }
-        }
-        else if (choice == 3) {
-            System.out.println("Last Transaction: " +
-                    (transactionHistory.isEmpty() ? "None" : transactionHistory.peek()));
+            } else if (choice == 4) break;
         }
     }
 }

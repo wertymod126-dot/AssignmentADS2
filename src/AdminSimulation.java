@@ -1,73 +1,64 @@
-import java.util.LinkedList;
-import java.util.Queue;
-
 public class AdminSimulation {
-    //Task 5
-    // 1. The Queue for pending requests
-    private Queue<AccountRequest> accountRequests = new LinkedList<>();
-
-    // 2. The main LinkedList for approved accounts (from Task 1)
+    private AccReqNode front;
+    private AccReqNode rear;
     private BankLinkedList mainSystem = new BankLinkedList();
 
-    // Helper class to store request data temporarily
     class AccountRequest {
-        String name;
-        double initialDeposit;
-        int id;
+        String accountID;
+        double initialbalance;
+        String username;
 
-        AccountRequest(String name, double initialDeposit, int id) {
-            this.name = name;
-            this.initialDeposit = initialDeposit;
-            this.id = id;
+        public AccountRequest(String accountID, double initialbalance, String username) {
+            this.accountID = accountID;
+            this.initialbalance = initialbalance;
+            this.username = username;
         }
     }
 
-    // Method: User submits a request
-    public void submitRequest(String name, double deposit, int id) {
-        accountRequests.add(new AccountRequest(name, deposit, id));
-        System.out.println("Request Added to Queue: " + name);
+    public void submitAccountRequest(String accountID, double initialbalance, String username) {
+        AccountRequest requestedAcc = new AccountRequest(accountID, initialbalance, username);
+        AccReqNode accNode = new AccReqNode(requestedAcc);
+        if (rear == null) {
+            rear = front = accNode;
+        }
+        else {
+            rear.next = accNode;
+            rear = rear.next;
+        }
+        System.out.println("New account request has been submitted");
     }
+    public void processRequest(String request) {
+        if (front == null) {
+            System.out.println("No requests");
+            return;
+        }
+        else {
+            AccountRequest ReqToProcess = front.request;
+            front = front.next;
 
-    // Method: Admin processes the NEXT request in line
-    public void processNextRequest() {
-        if (!accountRequests.isEmpty()) {
-            // Remove from Queue (FIFO)
-            AccountRequest request = accountRequests.poll();
+            if (front == null) {
+                rear = null;
+            }
 
-            // Move to the permanent LinkedList
-            mainSystem.addAccount(request.name, request.initialDeposit, request.id);
+            mainSystem.addAccount(ReqToProcess.accountID,ReqToProcess.username,ReqToProcess.initialbalance);
 
-            System.out.println("Processing: " + request.name + " - Moved to Main System.");
-        } else {
-            System.out.println("No pending requests to process.");
+            System.out.println("Account has been added to the main system.");
         }
     }
 
-    // Method: Display pending requests
-    public void displayPending() {
-        System.out.println("\n--- Pending Account Requests ---");
-        if (accountRequests.isEmpty()) {
-            System.out.println("Queue is empty.");
-        } else {
-            for (AccountRequest req : accountRequests) {
-                System.out.println("User: " + req.name + " | Deposit: " + req.initialDeposit);
+    public void displayRequests() {
+        if (front == null) {
+            System.out.println("No requests");
+        }
+        else {
+            System.out.println("--------Account Requests-------");
+            AccReqNode temp = front;
+            while (temp != null) {
+                System.out.println("User: " + temp.request.username + " | ID: " + temp.request.accountID + " | Balance: " + temp.request.initialbalance);
+                temp = temp.next;
             }
         }
     }
 
-    public static void main(String[] args) {
-        AdminSimulation admin = new AdminSimulation();
-
-        // Users applying
-        admin.submitRequest("John Doe", 5000.0, 103);
-        admin.submitRequest("Jane Smith", 12000.0, 104);
-
-        admin.displayPending();
-
-        // Admin approving the first person in line (John Doe)
-        admin.processNextRequest();
-
-        // Showing the permanent system
-        admin.mainSystem.displayAccounts();
-    }
 }
+

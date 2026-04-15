@@ -1,10 +1,13 @@
 public class BankAccount {
-    // task 1
-    String username;
+    //• accountNumber
+    //• username
+    //• balance
+    String accountNumber;
     double balance;
-    int accountNumber;
-
-    public BankAccount(String username, double balance, int accountNumber) {
+    String username;
+    public BankAccount(String accountNumber, String username, double balance) {
+        this.accountNumber = accountNumber;
         this.username = username;
+        this.balance = balance;
     }
 }
